@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 download/*
 Total_can_drink.zip
+folds/*
+__MACOSX/*
 
 # C extensions
 *.so

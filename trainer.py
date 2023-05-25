@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import argparse
 import os
 import numpy as np
@@ -6,10 +7,13 @@ import random
 import pickle
 import pandas as pd
 
+from tqdm import tqdm
 from PIL import Image
 from torchvision.datasets import ImageFolder
 from torchvision import transforms
 from pytorchcv.model_provider import get_model
+from torch.utils.data import DataLoader
+from sklearn.metrics import accuracy_score
 
 _default_train_transform = transforms.Compose(
     [
@@ -53,6 +57,46 @@ def set_gpu_id(id : int):
     print(device)
     return device
 
+def train(model, epoch, optimizer, train_loader, test_loader, scheduler, device):
+    
+    model.to(device)
+    criterion = nn.CrossEntropyLoss().to(device)
+    
+    best_score = 0
+    best_model = None
+    model_pred = []
+    true_labels = []
+    for epoch in range(1,+1):
+        model.train()
+        train_loss = []
+        for img, label in tqdm(iter(train_loader)):
+            img, label = img.float().to(device), label.to(device)
+            
+            optimizer.zero_grad()
+
+            model_pred = model(img)
+            
+            loss = criterion(model_pred, label)
+
+            loss.backward()
+            optimizer.step()
+            train_loss.append(loss.item())
+
+        tr_loss = np.mean(train_loss)
+            
+        # val_loss, val_score = validation(model, criterion, test_loader, device)
+        
+            
+        print(f'Epoch [{epoch}], Train Loss : [{tr_loss:.5f}]')
+        
+        if scheduler is not None:
+            scheduler.step()
+            
+        if best_score < _score:
+            best_model = model
+            best_score = val_score
+        
+    return best_model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utilize avalianche')
@@ -74,6 +118,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
+    train_loader = DataLoader(train_dataset, batch_size=512, shuffle=True, num_workers=4)
     seed_everything(args.seed)
     cur_device = set_gpu_id(args.gpu)
     model = get_model('resnet50')
