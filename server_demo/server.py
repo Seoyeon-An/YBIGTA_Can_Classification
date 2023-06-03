@@ -26,7 +26,13 @@ class Greeter(hello_pb2_grpc.GreeterServicer):
             data.extend(request.chunk_data)
         with open(filepath, 'wb') as f:
             f.write(data)
-        return hello_pb2.StringResponse(message='Success!')
+
+        with open(filepath, mode='rb') as f:
+            chunk = f.read(1024)
+            infostring = hello_pb2.FileResponse(chunk_data=chunk)
+        return infostring
+        # This is the code that would originally print Success! once the txt file was properly uploaded to the server.
+        # return hello_pb2.StringResponse(message='Success!')
 
     def DownloadFile(self, request, context):
         chunk_size = 1024
