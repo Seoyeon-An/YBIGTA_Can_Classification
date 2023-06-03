@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+// The greeting service definition.
+service Greeter {
+// Sends a greeting
+    rpc SayHello (HelloRequest) returns (StringResponse) {}
+    rpc UploadFile (stream UploadFileRequest) returns (StringResponse) {}
+    rpc DownloadFile (MetaData) returns (stream FileResponse) {}
+}
+
+message HelloRequest {
+    string name = 1;
+    int32 age = 2;
+}
+
+message StringResponse {
+    string message = 1;
+}
+
+message FileResponse {
+    bytes chunk_data = 1;
+}
+
+message MetaData {
+    string filename = 1;
+    string extension = 2;
+}
+
+message UploadFileRequest {
+    oneof request {
+        MetaData metadata = 1;
+        bytes chunk_data = 2;
+    }
+}

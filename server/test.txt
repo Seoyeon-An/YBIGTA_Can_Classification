@@ -1,0 +1,9 @@
+Let’s recap what you have learned today.
+
+The article started off with a brief introduction to gRPC before moving on to setup and installation.
+
+Then, it covered message and service definition via Protocol Buffers. It also highlighted the steps to generate gRPC code for consumption by the client and server applications.
+
+It also explained the basic client and server code implementation. Subsequently, it provided the code to update the existing code for file uploading and downloading via streaming.
+
+Thanks for reading this piece. Feel free to check my other articles. Have a great day ahead!
