@@ -15,7 +15,7 @@ def read_iterfile(filepath, chunk_size=1024):
 
     metadata = hello_pb2.MetaData(filename=filename, extension=extension)
     yield hello_pb2.UploadFileRequest(metadata=metadata)
-    with open(f'client/resources/{filepath}', mode="rb") as f:
+    with open(f'resources/{filepath}', mode="rb") as f:
         while True:
             chunk = f.read(chunk_size)
             if chunk:
