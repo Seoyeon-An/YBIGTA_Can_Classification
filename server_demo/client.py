@@ -15,7 +15,7 @@ def read_iterfile(filepath, chunk_size=1024):
 
     metadata = hello_pb2.MetaData(filename=filename, extension=extension)
     yield hello_pb2.UploadFileRequest(metadata=metadata)
-    with open(f'client/resources/{filepath}', mode="rb") as f:
+    with open(f'server/resources/{filepath}', mode="rb") as f:
         while True:
             chunk = f.read(chunk_size)
             if chunk:
@@ -34,17 +34,18 @@ def run():
             hello_pb2.HelloRequest(name='John Doe', age=30))
         print("Greeter client received: " + response.message)
 
-        # upload file
-        response = stub.UploadFile(read_iterfile('test.txt'))
+        # upload file: given an file (txt/img), reads it as byte sequence and returns one str message.
+        response = stub.UploadFile(read_iterfile('test.jpg'))
         print("Greeter client received: " + response.message)
 
-        # download file
+        # download file: given a filename, downloads and saves as file
         filename = 'test'
         extension = '.jpg'
         filepath = get_filepath(filename, extension)
         for entry_response in stub.DownloadFile(hello_pb2.MetaData(filename=filename, extension=extension)):
-            with open("test2.jpg", mode="ab") as f:
+            with open("download_result.jpg", mode="ab") as f:
                 f.write(entry_response.chunk_data)
+        print("Downloaded image successfully.")
 
 
 if __name__ == '__main__':
