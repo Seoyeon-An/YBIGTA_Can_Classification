@@ -26,7 +26,7 @@ def read_iterfile(filepath, chunk_size=1024):
 
 
 def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('34.64.40.136:50051') as channel:
         stub = hello_pb2_grpc.GreeterStub(channel)
 
         # say hello
@@ -35,7 +35,7 @@ def run():
         # print("Greeter client received: " + response.message)
 
         # upload file: given an file (txt/img), reads it as byte sequence and returns one str message.
-        response = stub.UploadFile(read_iterfile('pocari_test.jpg'))
+        response = stub.UploadFile(read_iterfile('hotsix_test.jpg'))
         print("Greeter client received: " + response.message)
 
         # download file: given a filename, downloads and saves as file
