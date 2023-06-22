@@ -1,6 +1,7 @@
 import logging
 import os
 import grpc
+import time
 from protos import hello_pb2, hello_pb2_grpc
 
 
@@ -15,7 +16,7 @@ def read_iterfile(filepath, chunk_size=1024):
 
     metadata = hello_pb2.MetaData(filename=filename, extension=extension)
     yield hello_pb2.UploadFileRequest(metadata=metadata)
-    with open(f'server/resources/{filepath}', mode="rb") as f:
+    with open(f'client/client_image/{filepath}', mode="rb") as f:
         while True:
             chunk = f.read(chunk_size)
             if chunk:
@@ -34,9 +35,22 @@ def run():
         #     hello_pb2.HelloRequest(name='John Doe', age=30))
         # print("Greeter client received: " + response.message)
 
-        # upload file: given an file (txt/img), reads it as byte sequence and returns one str message.
-        response = stub.UploadFile(read_iterfile('hotsix_test.jpg'))
-        print("Greeter client received: " + response.message)
+        # check if folder empty or not
+        path = "client/client_image"
+
+        # Checking if the list is empty or not
+        while (1):
+            dir = os.listdir(path)
+            if len(dir) == 0:
+                print("Empty directory")
+                time.sleep(5)
+            else:
+                # upload file: given an file (txt/img), reads it as byte sequence and returns one str message.
+                filename = dir[0]
+                print(filename)
+                response = stub.UploadFile(read_iterfile(filename))
+                print("Greeter client received: " + response.message)
+                break
 
         # download file: given a filename, downloads and saves as file
         # filename = 'test'
