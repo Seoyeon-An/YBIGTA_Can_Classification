@@ -1,12 +1,27 @@
 from concurrent import futures
 import logging
 import os
+import io
 import grpc
+from PIL import Image
 from protos import hello_pb2, hello_pb2_grpc
+
+from ultralytics import YOLO
+import torch
+import numpy as np
 
 
 def get_filepath(filename, extension):
     return f'{filename}{extension}'
+
+
+def run(image):
+    model = YOLO('./model.pt')
+    result = model.predict(image)
+    answer = result[0].names[result[0].probs.top1]
+    # threshold = result[0].probs.top1conf
+    # return [answer, threshold]
+    return answer
 
 
 class Greeter(hello_pb2_grpc.GreeterServicer):
@@ -26,16 +41,22 @@ class Greeter(hello_pb2_grpc.GreeterServicer):
                 continue
             data.extend(request.chunk_data)
 
+        image = Image.open(io.BytesIO(data))
+        image.save('restored.png')
+
+        result = run(image)
+
         # Prints the uploaded text in the server terminal
         # print(data.decode())
 
         # Writes the uploaded data into file in server
         # Disclaimer: need to create folder beforehand otherwise "File does not exist error happens"
-        with open(newsavepath, 'wb') as f:
-            f.write(data)
+        # with open(newsavepath, 'wb') as f:
+        #     f.write(data)
 
         # Returns Success! once the file was properly uploaded to the server.
-        return hello_pb2.StringResponse(message='Successfully uploaded!')
+        # return hello_pb2.StringResponse(message='Successfully uploaded!')
+        return hello_pb2.StringResponse(message=result)
 
     def DownloadFile(self, request, context):
         chunk_size = 1024

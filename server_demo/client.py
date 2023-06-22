@@ -30,22 +30,22 @@ def run():
         stub = hello_pb2_grpc.GreeterStub(channel)
 
         # say hello
-        response = stub.SayHello(
-            hello_pb2.HelloRequest(name='John Doe', age=30))
-        print("Greeter client received: " + response.message)
+        # response = stub.SayHello(
+        #     hello_pb2.HelloRequest(name='John Doe', age=30))
+        # print("Greeter client received: " + response.message)
 
         # upload file: given an file (txt/img), reads it as byte sequence and returns one str message.
-        response = stub.UploadFile(read_iterfile('test.jpg'))
+        response = stub.UploadFile(read_iterfile('pocari_test.jpg'))
         print("Greeter client received: " + response.message)
 
         # download file: given a filename, downloads and saves as file
-        filename = 'test'
-        extension = '.jpg'
-        filepath = get_filepath(filename, extension)
-        for entry_response in stub.DownloadFile(hello_pb2.MetaData(filename=filename, extension=extension)):
-            with open("download_result.jpg", mode="ab") as f:
-                f.write(entry_response.chunk_data)
-        print("Downloaded image successfully.")
+        # filename = 'test'
+        # extension = '.jpg'
+        # filepath = get_filepath(filename, extension)
+        # for entry_response in stub.DownloadFile(hello_pb2.MetaData(filename=filename, extension=extension)):
+        #     with open("download_result.jpg", mode="ab") as f:
+        #         f.write(entry_response.chunk_data)
+        # print("Downloaded image successfully.")
 
 
 if __name__ == '__main__':
