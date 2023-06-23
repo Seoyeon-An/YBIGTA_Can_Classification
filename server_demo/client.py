@@ -27,7 +27,7 @@ def read_iterfile(filepath, chunk_size=1024):
 
 
 def run():
-    with grpc.insecure_channel('34.64.40.136:50051') as channel:
+    with grpc.insecure_channel('localhost:50051') as channel:
         stub = hello_pb2_grpc.GreeterStub(channel)
 
         # say hello
