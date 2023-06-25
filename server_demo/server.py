@@ -60,10 +60,11 @@ class Greeter(hello_pb2_grpc.GreeterServicer):
             data.extend(request.chunk_data)
 
         image = Image.open(io.BytesIO(data))
+        image = image.rotate(270, expand=True)
         open_cv_image = np.array(image)
         # Convert RGB to BGR
         open_cv_image = open_cv_image[:, :, ::-1].copy()
-        # image.save('restored.png')
+        image.save('restored.png')
 
         # result = run(image)
         result = run(open_cv_image)
